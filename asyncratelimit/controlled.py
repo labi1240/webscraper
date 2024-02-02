@@ -12,17 +12,18 @@ async def request_data(client, url, limiter):
 async def main():
     rate_limit = AsyncLimiter(100, 0.1)
     async with httpx.AsyncClient() as client:
-        tasks = []
-        for url in urls:
-            tasks.append(request_data(client, "http://localhost:4000/", rate_limit))
+        tasks = [
+            request_data(client, "http://localhost:4000/", rate_limit)
+            for _ in urls
+        ]
         data = await asyncio.gather(*tasks)
     return data
 
 
-urls = [i for i in range(1, 1000)]
+urls = list(range(1, 1000))
 results = asyncio.run(main())
-errors = sum([1 for e in results if 'Error' in e.values()])
-sucesses = sum([1 for e in results if 'Successful' in e.values()])
+errors = sum(1 for e in results if 'Error' in e.values())
+sucesses = sum(1 for e in results if 'Successful' in e.values())
 output = {"sucesses": sucesses, "errors": errors}
 print(output)
 

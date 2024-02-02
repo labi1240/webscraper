@@ -4,20 +4,17 @@ from selectolax.parser import HTMLParser
 
 def make_request(url):
     resp = requests.get(url)
-    html = HTMLParser(resp.text)
-    return html
+    return HTMLParser(resp.text)
 
 
 def parse(books):
-    page_results = []
-    for book in books.css("article.product_pod"):
-        page_results.append(
-            {
-                "title": book.css_first("h3 > a").attrs["title"],
-                "price": book.css_first("p.price_color").text(),
-            }
-        )
-    return page_results
+    return [
+        {
+            "title": book.css_first("h3 > a").attrs["title"],
+            "price": book.css_first("p.price_color").text(),
+        }
+        for book in books.css("article.product_pod")
+    ]
 
 
 def next_page(books):

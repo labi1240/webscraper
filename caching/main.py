@@ -20,7 +20,7 @@ async def index(request: Request):
 #same template used here but a post request and request to the external API
 @app.post("/", response_class=HTMLResponse)
 async def char_id_get(request: Request, char_id: int = Form()):
-    resp = requests.get("https://rickandmortyapi.com/api/character/" + str(char_id))
+    resp = requests.get(f"https://rickandmortyapi.com/api/character/{char_id}")
 
     # whats in the cache?
     print(requests_cache.get_cache())

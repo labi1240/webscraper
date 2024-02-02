@@ -14,17 +14,15 @@ class Item:
 
 def get_html(page, asin):
     page.goto(f"https://www.amazon.co.uk/dp/{asin}")
-    html = HTMLParser(page.content())
-    return html
+    return HTMLParser(page.content())
 
 
 def parse_html(html, asin):
-    item = Item(
+    return Item(
         asin=asin,
         title=html.css_first("h1#title").text(strip=True),
         price=html.css_first("span.a-offscreen").text(strip=True),
     )
-    return item
 
 
 def read_csv():
