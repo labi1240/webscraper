@@ -46,11 +46,11 @@ def parse_product_links(html):
 
 
 def parse_detail_page(html):
-    highlights = []
-    for hlitem in html.css("ul.mb-3 li"):
-        highlights.append(hlitem.css_first("li").text(strip=True))
-
-    new_product = Product(
+    highlights = [
+        hlitem.css_first("li").text(strip=True)
+        for hlitem in html.css("ul.mb-3 li")
+    ]
+    return Product(
         name=extract_text(html, "title", 0),
         sku=extract_text(html, "span[itemprop=sku]", 0),
         price=extract_text(html, "span.price", 0),
@@ -58,7 +58,6 @@ def parse_detail_page(html):
         old_price=extract_text(html, "span.save", 0),
         highlights=highlights,
     )
-    return new_product
 
 
 def main():

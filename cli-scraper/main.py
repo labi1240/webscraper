@@ -30,7 +30,7 @@ def get_price(asin: str):
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/110.0"
     }
-    resp = requests.get("https://amazon.co.uk/dp/" + asin, headers=headers)
+    resp = requests.get(f"https://amazon.co.uk/dp/{asin}", headers=headers)
     resp.raise_for_status()
     html = HTMLParser(resp.text)
     item = Item(asin=new_asin, price=html.css_first("span.a-offscreen").text().strip())

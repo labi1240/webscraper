@@ -11,7 +11,7 @@ def print_url(r, *args, **kwargs):
 @cache
 def rm_character(char_id):
     resp = requests.get(
-        "https://rickandmortyapi.com/api/character/" + str(char_id),
+        f"https://rickandmortyapi.com/api/character/{str(char_id)}",
         hooks={"response": print_url},
     )
     return resp.json()

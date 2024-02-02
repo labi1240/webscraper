@@ -4,7 +4,9 @@ from rich import print
 
 
 def rm_character(char_id):
-    response = session.get("https://rickandmortyapi.com/api/character/" + str(char_id))
+    response = session.get(
+        f"https://rickandmortyapi.com/api/character/{str(char_id)}"
+    )
     print(
         response.from_cache,
         response.created_at,

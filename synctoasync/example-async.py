@@ -8,10 +8,12 @@ async def request_data(client, url):
 
 async def main():
     async with httpx.AsyncClient() as client:
-        tasks = []
-        for i in range(1,50):
-            tasks.append(request_data(client, f"https://rickandmortyapi.com/api/character/{i}"))
-
+        tasks = [
+            request_data(
+                client, f"https://rickandmortyapi.com/api/character/{i}"
+            )
+            for i in range(1, 50)
+        ]
         characters = await asyncio.gather(*tasks)
         for c in characters:
             print(c)

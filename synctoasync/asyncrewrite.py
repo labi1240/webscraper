@@ -35,14 +35,13 @@ def is_integer(val):
 
 def parse_detail(html, selector, index):
     try:
-        value = html.css(selector)[index].text(strip=True)
-        return value
+        return html.css(selector)[index].text(strip=True)
     except:
         return "none"
 
 
 def detail_page_new(html):
-    new_book = Book(
+    return Book(
         title=parse_detail(html, "h1", 0),
         UPC=parse_detail(html, "table tbody tr td", 0),
         product_type=parse_detail(html, "table tbody tr td", 1),
@@ -52,7 +51,6 @@ def detail_page_new(html):
         availability=parse_detail(html, "table tbody tr td", 5),
         num_of_reviews=parse_detail(html, "table tbody tr td", 6),
     )
-    return new_book
 
 
 def get_total_pages(url):
@@ -60,8 +58,7 @@ def get_total_pages(url):
     html = HTMLParser(resp.text)
     pages = html.css_first("ul.pager li.current").text(strip=True).split()
     pages_int = [is_integer(page) for page in pages if is_integer(page) is not None]
-    last_page = max(pages_int)
-    return last_page
+    return max(pages_int)
 
 
 def parse_links(html):
@@ -72,20 +69,18 @@ def parse_links(html):
 async def get_async_links(client, url):
     resp = await client.get(url)
     html = HTMLParser(resp.text)
-    links = parse_links(html)
-    return links
+    return parse_links(html)
 
 
 async def get_links():
     base_url = "https://books.toscrape.com/catalogue/"
     async with httpx.AsyncClient() as client:
-        tasks = []
-        for i in range(1, get_total_pages(base_url + "page-1.html") + 1):
-            tasks.append(
-                asyncio.ensure_future(
-                    get_async_links(client, base_url + f"page-{i}.html")
-                )
+        tasks = [
+            asyncio.ensure_future(
+                get_async_links(client, f"{base_url}page-{i}.html")
             )
+            for i in range(1, get_total_pages(f"{base_url}page-1.html") + 1)
+        ]
         return await asyncio.gather(*tasks)
 
 
@@ -98,11 +93,10 @@ async def get_async_details(client, url):
 async def get_detail(urls):
     base_url = "https://books.toscrape.com/catalogue/"
     async with httpx.AsyncClient() as client:
-        tasks = []
-        for url in urls:
-            tasks.append(
-                asyncio.ensure_future(get_async_details(client, base_url + url))
-            )
+        tasks = [
+            asyncio.ensure_future(get_async_details(client, base_url + url))
+            for url in urls
+        ]
         return await asyncio.gather(*tasks)
 
 
@@ -110,8 +104,7 @@ def main():
     links = asyncio.run(get_links())
     detail_links = []
     for link in chain(links):
-        for l in chain(link):
-            detail_links.append(l)
+        detail_links.extend(iter(chain(link)))
     details = asyncio.run(get_detail(detail_links))
     print(len(details))
 

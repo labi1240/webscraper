@@ -15,19 +15,17 @@ class Podcast:
 
 def get_data(feed_url):
     resp = requests.get(feed_url)
-    soup = BeautifulSoup(resp.text, features="xml")
-    return soup
+    return BeautifulSoup(resp.text, features="xml")
 
 
 def parse_xml(soup):
     item = soup.find("item")
-    episode = Podcast(
+    return Podcast(
         title=item.find("title").text,
         link=item.find("enclosure")["url"],
         desc=item.find("description").text,
         date=item.find("pubDate").text,
     )
-    return episode
 
 
 @click.command()

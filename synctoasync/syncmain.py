@@ -40,14 +40,13 @@ def parse_links(html):
 
 def parse_detail(html, selector, index):
     try:
-        value = html.css(selector)[index].text(strip=True)
-        return value
+        return html.css(selector)[index].text(strip=True)
     except:
         return "none"
 
 
 def detail_page_new(html):
-    new_book = Book(
+    return Book(
         title=parse_detail(html, "h1", 0),
         UPC=parse_detail(html, "table tbody tr td", 0),
         product_type=parse_detail(html, "table tbody tr td", 1),
@@ -57,14 +56,10 @@ def detail_page_new(html):
         availability=parse_detail(html, "table tbody tr td", 5),
         num_of_reviews=parse_detail(html, "table tbody tr td", 6),
     )
-    return new_book
 
 
 def check_url_text(value):
-    if "catalogue" not in value:
-        return "catalogue/" + value
-    else:
-        return value
+    return f"catalogue/{value}" if "catalogue" not in value else value
 
 # these functions enable the first stage of the async code
 # async def async_get_data(client, url):
@@ -97,7 +92,7 @@ def main():
             book_item = detail_page_new(product_page_data.body_html)
             results.append(book_item)
             print(book_item)
-        if data.next_page["href"] == None:
+        if data.next_page["href"] is None:
             client.close()
             break
         next_page_url = check_url_text(data.next_page["href"])

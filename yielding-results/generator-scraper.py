@@ -4,8 +4,7 @@ from selectolax.parser import HTMLParser
 
 def make_request(url):
     resp = requests.get(url)
-    html = HTMLParser(resp.text)
-    return html
+    return HTMLParser(resp.text)
 
 
 def parse(books):
